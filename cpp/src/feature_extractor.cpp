@@ -34,7 +34,7 @@ bool FeatureExtractor::matchesTargetIP(const PacketInfo& packet) const {
     if (target_ips_.empty()) {
         return true;  // If no target IPs specified, accept all packets
     }
-    return target_ips_.count(packet.src_ip) > 0 || target_ips_.count(packet.dst_ip) > 0;
+    return target_ips_.count(packet.dst_ip) > 0;
 }
 
 std::vector<IPFeatures> FeatureExtractor::extractFeatures(
@@ -50,18 +50,13 @@ std::vector<IPFeatures> FeatureExtractor::extractFeatures(
             continue;
         }
 
-        // Determine which IP(s) this packet should be attributed to
-        // If src_ip is in target_ips, attribute to src_ip
         // If dst_ip is in target_ips, attribute to dst_ip
-        // If both are in target_ips, count for both
         std::vector<uint32_t> ips_to_update;
 
-        if (target_ips_.empty() || target_ips_.count(packet.src_ip) > 0) {
-            ips_to_update.push_back(packet.src_ip);
-        }
-        if (target_ips_.count(packet.dst_ip) > 0 && packet.dst_ip != packet.src_ip) {
+        if (target_ips_.empty() || target_ips_.count(packet.dst_ip) > 0) {
             ips_to_update.push_back(packet.dst_ip);
         }
+      
 
         for (uint32_t ip : ips_to_update) {
             // Get or create features for this IP

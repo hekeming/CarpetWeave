@@ -201,7 +201,6 @@ int main(int argc, char* argv[]) {
 
             // 检查是否匹配目标IP
             bool matches = target_ips_uint.empty() ||
-                          target_ips_uint.count(packet.src_ip) > 0 ||
                           target_ips_uint.count(packet.dst_ip) > 0;
 
             if (matches) {

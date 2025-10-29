@@ -83,11 +83,7 @@ void SlidingWindow::processWindow(double window_start, double window_end) {
     for (const auto& packet : packets_) {
         // 只包含在窗口时间范围内的包
         if (packet.ts >= window_start && packet.ts < window_end) {
-            // 同时按src_ip和dst_ip归类
-            features.ip_packets[packet.src_ip].push_back(packet);
-            if (packet.dst_ip != packet.src_ip) {
-                features.ip_packets[packet.dst_ip].push_back(packet);
-            }
+            features.ip_packets[packet.dst_ip].push_back(packet);
         }
     }
 
