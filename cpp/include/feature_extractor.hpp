@@ -9,7 +9,7 @@
 
 namespace ipflow {
 
-// 协议统计：包数和字节数
+// Protocol statistics: packet count and byte count
 struct ProtocolStats {
     uint32_t packet_count;
     uint64_t byte_count;
@@ -17,19 +17,19 @@ struct ProtocolStats {
     ProtocolStats() : packet_count(0), byte_count(0) {}
 };
 
-// 单个IP的特征
+// Features for a single IP address
 struct IPFeatures {
-    uint32_t ip;                // IP地址（主机字节序）
-    double timestamp;           // 窗口结束时间
+    uint32_t ip;                // IP address (host byte order)
+    double timestamp;           // Window end time
 
-    // 协议统计：<协议号, <包数, 总字节数>>
+    // Protocol statistics: <protocol_number, <packet_count, total_bytes>>
     std::map<uint8_t, ProtocolStats> protocol_stats;
 
-    // 总体统计
+    // Overall statistics
     uint32_t total_packets;
     uint64_t total_bytes;
 
-    // TCP标志统计
+    // TCP flag statistics
     uint32_t tcp_syn_count;
     uint32_t tcp_ack_count;
     uint32_t tcp_rst_count;
@@ -42,24 +42,24 @@ struct IPFeatures {
 
 class FeatureExtractor {
 public:
-    // 设置目标IP列表（只统计这些IP）
+    // Set target IP list (only statistics for these IPs will be collected)
     void setTargetIPs(const std::unordered_set<uint32_t>& target_ips);
 
-    // 从数据包列表提取特征
-    // 返回每个IP的特征（只包含target_ips中的IP）
+    // Extract features from packet list
+    // Returns features for each IP (only includes IPs in target_ips)
     std::vector<IPFeatures> extractFeatures(
         double window_end_time,
         const std::vector<PacketInfo>& packets
     );
 
-    // IP地址转换工具函数
+    // IP address conversion utility functions
     static uint32_t ipStringToUint32(const std::string& ip_str);
     static std::string uint32ToIpString(uint32_t ip);
 
 private:
     std::unordered_set<uint32_t> target_ips_;
 
-    // 判断数据包是否包含目标IP
+    // Check if packet contains target IP
     bool matchesTargetIP(const PacketInfo& packet) const;
 };
 

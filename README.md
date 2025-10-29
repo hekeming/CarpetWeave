@@ -9,12 +9,12 @@ This enables accurate detection of **Carpet Bombing DDoS attacks**, where attack
 
 ## ✨ Project Status
 
-**Version 2.0 - Fully Implemented**
+**Version 1.2 - Research Validation**
 
 - ✅ **PCAP → Feature Matrix Pipeline (C++)**: Complete sliding-window feature extraction from PCAP files
-- ✅ **Behavior Decomposition (Python)**: NMF-based matrix decomposition (X ≈ A*F) for behavior analysis
-- ✅ **Attack Detection**: Anomaly detection based on reconstruction error
-- ✅ **Visualization**: Feature basis heatmaps, time series plots, anomaly visualization
+- ✅ **Matrix Analysis (Python)**: NMF/PCA-based matrix decomposition (X ≈ A*F)
+- ✅ **Validation Experiments**: Stability analysis and low-rank property testing
+- 🔬 **Focus**: Research validation, NOT production anomaly detection
 
 ---
 
@@ -29,22 +29,18 @@ cd cpp/build
 
 Generates **features.csv** with 14-dimensional feature vectors per IP per time window.
 
-### 2. Train Behavior Model
+### 2. Run Validation Experiments
 
 ```bash
 cd ../../python
-python analyze_features.py ../cpp/build/features.csv --mode train --n_components 5
+# Experiment 1: Stability Analysis
+python stability_experiment.py ../cpp/build/features.csv --output ./results
+
+# Experiment 2: Low-Rank Analysis
+python low_rank_experiment.py ../cpp/build/features.csv --output ./results
 ```
 
-Learns **feature basis matrix F** representing 5 latent behavior patterns.
-
-### 3. Detect Anomalies
-
-```bash
-python analyze_features.py ../cpp/build/features.csv --mode detect
-```
-
-Identifies IPs with unusual behavior based on reconstruction error.
+Validates whether stable behavioral patterns exist and if traffic exhibits low-rank properties.
 
 ---
 

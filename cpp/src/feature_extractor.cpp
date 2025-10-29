@@ -6,19 +6,19 @@
 
 namespace ipflow {
 
-// IP地址字符串转uint32_t（主机字节序）
+// Convert IP address string to uint32_t (host byte order)
 uint32_t FeatureExtractor::ipStringToUint32(const std::string& ip_str) {
     struct in_addr addr;
     if (inet_pton(AF_INET, ip_str.c_str(), &addr) != 1) {
         throw std::runtime_error("Invalid IP address: " + ip_str);
     }
-    return ntohl(addr.s_addr);  // 转换为主机字节序
+    return ntohl(addr.s_addr);  // Convert to host byte order
 }
 
-// uint32_t转IP地址字符串（输入为主机字节序）
+// Convert uint32_t to IP address string (input is in host byte order)
 std::string FeatureExtractor::uint32ToIpString(uint32_t ip) {
     struct in_addr addr;
-    addr.s_addr = htonl(ip);  // 转换为网络字节序
+    addr.s_addr = htonl(ip);  // Convert to network byte order
     char str[INET_ADDRSTRLEN];
     if (inet_ntop(AF_INET, &addr, str, INET_ADDRSTRLEN) == nullptr) {
         throw std::runtime_error("Failed to convert IP to string");
@@ -32,7 +32,7 @@ void FeatureExtractor::setTargetIPs(const std::unordered_set<uint32_t>& target_i
 
 bool FeatureExtractor::matchesTargetIP(const PacketInfo& packet) const {
     if (target_ips_.empty()) {
-        return true;  // 如果没有指定目标IP，则接受所有包
+        return true;  // If no target IPs specified, accept all packets
     }
     return target_ips_.count(packet.src_ip) > 0 || target_ips_.count(packet.dst_ip) > 0;
 }
@@ -41,19 +41,19 @@ std::vector<IPFeatures> FeatureExtractor::extractFeatures(
     double window_end_time,
     const std::vector<PacketInfo>& packets
 ) {
-    // 为每个IP维护特征
+    // Maintain features for each IP
     std::unordered_map<uint32_t, IPFeatures> ip_features_map;
 
     for (const auto& packet : packets) {
-        // 只处理匹配目标IP的包
+        // Only process packets matching target IPs
         if (!matchesTargetIP(packet)) {
             continue;
         }
 
-        // 判断这个包应该归属于哪个IP的统计
-        // 如果src_ip在target_ips中，归属于src_ip
-        // 如果dst_ip在target_ips中，归属于dst_ip
-        // 如果两者都在，则两个都统计
+        // Determine which IP(s) this packet should be attributed to
+        // If src_ip is in target_ips, attribute to src_ip
+        // If dst_ip is in target_ips, attribute to dst_ip
+        // If both are in target_ips, count for both
         std::vector<uint32_t> ips_to_update;
 
         if (target_ips_.empty() || target_ips_.count(packet.src_ip) > 0) {
@@ -64,23 +64,23 @@ std::vector<IPFeatures> FeatureExtractor::extractFeatures(
         }
 
         for (uint32_t ip : ips_to_update) {
-            // 获取或创建该IP的特征
+            // Get or create features for this IP
             auto& features = ip_features_map[ip];
-            if (features.ip == 0) {  // 首次创建
+            if (features.ip == 0) {  // First time creation
                 features.ip = ip;
                 features.timestamp = window_end_time;
             }
 
-            // 更新总体统计
+            // Update overall statistics
             features.total_packets++;
             features.total_bytes += packet.len;
 
-            // 更新协议统计
+            // Update protocol statistics
             uint8_t proto = packet.proto;
             features.protocol_stats[proto].packet_count++;
             features.protocol_stats[proto].byte_count += packet.len;
 
-            // 更新TCP标志
+            // Update TCP flags
             if (packet.proto == 6) {  // TCP
                 if (packet.tcp_syn) features.tcp_syn_count++;
                 if (packet.tcp_ack) features.tcp_ack_count++;
@@ -90,7 +90,7 @@ std::vector<IPFeatures> FeatureExtractor::extractFeatures(
         }
     }
 
-    // 转换为vector返回
+    // Convert to vector and return
     std::vector<IPFeatures> result;
     result.reserve(ip_features_map.size());
     for (const auto& pair : ip_features_map) {
