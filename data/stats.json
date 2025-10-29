@@ -6,7 +6,7 @@
     "210.85.191.166",
     "202.213.224.24"
   ],
-  "window_size": 60,
-  "slide_step": 30,
+  "window_size": 2,
+  "slide_step": 1,
   "output_file": "features.csv"
 }

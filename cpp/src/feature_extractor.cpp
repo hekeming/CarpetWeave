@@ -37,25 +37,6 @@ bool FeatureExtractor::matchesTargetIP(const PacketInfo& packet) const {
     return target_ips_.count(packet.src_ip) > 0 || target_ips_.count(packet.dst_ip) > 0;
 }
 
-size_t FeatureExtractor::getLengthBin(uint16_t len) {
-    if (len <= 64) return 0;
-    if (len <= 128) return 1;
-    if (len <= 256) return 2;
-    if (len <= 512) return 3;
-    if (len <= 1024) return 4;
-    if (len <= 1518) return 5;
-    return 6;  // 1519+
-}
-
-Protocol FeatureExtractor::getProtocol(uint8_t proto_num) {
-    switch (proto_num) {
-        case 6:   return Protocol::TCP;
-        case 17:  return Protocol::UDP;
-        case 1:   return Protocol::ICMP;
-        default:  return Protocol::ICMP;  // 将其他协议归类为ICMP
-    }
-}
-
 std::vector<IPFeatures> FeatureExtractor::extractFeatures(
     double window_end_time,
     const std::vector<PacketInfo>& packets
@@ -90,14 +71,14 @@ std::vector<IPFeatures> FeatureExtractor::extractFeatures(
                 features.timestamp = window_end_time;
             }
 
-            // 更新统计
+            // 更新总体统计
             features.total_packets++;
             features.total_bytes += packet.len;
 
-            // 更新包长直方图
-            Protocol proto = getProtocol(packet.proto);
-            size_t bin = getLengthBin(packet.len);
-            features.length_hist[static_cast<size_t>(proto)][bin]++;
+            // 更新协议统计
+            uint8_t proto = packet.proto;
+            features.protocol_stats[proto].packet_count++;
+            features.protocol_stats[proto].byte_count += packet.len;
 
             // 更新TCP标志
             if (packet.proto == 6) {  // TCP
