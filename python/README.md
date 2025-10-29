@@ -347,13 +347,3 @@ A:
 
 - **内存占用**: O(m * n + k * n)
   - 模型大小: < 1MB
-
-## 参考文献
-
-1. Lee, D. D., & Seung, H. S. (2001). Algorithms for non-negative matrix factorization.
-2. Lakhina, A., et al. (2005). Structural analysis of network traffic flows.
-3. Xu, K., et al. (2006). Behavior analysis of internet traffic via bipartite graphs and one-mode projections.
-
-## 许可证
-
-本项目供学习和研究使用。
