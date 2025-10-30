@@ -166,19 +166,6 @@ Where:
 | `other_packets`, `other_bytes` | Other protocol statistics |
 | `tcp_syn`, `tcp_ack`, `tcp_rst`, `tcp_fin` | TCP flag counts |
 
-### Anomaly Detection
-
-**Normal Traffic**: Low reconstruction error (X ≈ A*F)
-**Anomalous Traffic**: High reconstruction error (X ≠ A*F)
-
-Threshold: 95th percentile of training errors (configurable)
-
----
-
-## 💡 Example Use Case: DDoS Detection
-
-### Scenario
-Detect Carpet Bombing DDoS where attacker spreads traffic across many IPs.
 
 ### Steps
 
@@ -214,16 +201,6 @@ Anomalous IPs show high weights on Basis 2 (attack pattern).
 
 ---
 
-## 📈 Performance
-
-| Metric | C++ Extractor | Python Analysis |
-|--------|---------------|-----------------|
-| **Speed** | ~1.3M packets/min | <1s for 1000 samples |
-| **Memory** | Stable (auto cleanup) | <100MB for typical models |
-| **Scalability** | 100MB+ PCAP files | 10K+ samples |
-
----
-
 ## 🛠️ Building & Installation
 
 ### Prerequisites
@@ -250,19 +227,6 @@ cd ../../python
 pip install -r requirements.txt
 ```
 
----
-
-## 📚 Research Background
-
-This implementation is inspired by research on network traffic decomposition:
-
-- **Lee & Seung (2001)**: Non-negative Matrix Factorization algorithms
-- **Lakhina et al. (2005)**: Structural analysis of network traffic flows
-- **Xu et al. (2006)**: Bipartite graph analysis for traffic decomposition
-
-**Key Insight**: Network traffic can be represented as linear combinations of latent behavior patterns, enabling detection of distributed attacks like Carpet Bombing.
-
----
 
 ## 🔧 Configuration
 
@@ -278,12 +242,6 @@ Edit `data/stats.json`:
   "output_file": "features.csv"
 }
 ```
-
-**Recommendations:**
-- Real-time detection: 1-5s windows
-- Pattern analysis: 10-60s windows
-- Long-term trends: 60s+ windows
-
 ### Decomposition Parameters
 
 ```bash
@@ -295,39 +253,3 @@ python analyze_features.py data.csv --method nmf  # or 'pca'
 
 # Anomaly threshold
 python analyze_features.py data.csv --mode detect --percentile 95
-```
-
----
-
-## 🤝 Contributing
-
-This project is for research and educational purposes. Contributions welcome!
-
----
-
-## 📄 License
-
-This project is provided for learning and research use.
-
----
-
-## 📧 Contact
-
-For questions or collaboration: See GitHub repository issues.
-
----
-
-## 🔄 Changelog
-
-### Version 2.0.0 (2024-10)
-- ✨ **New**: Complete Python matrix decomposition module
-- ✨ **New**: Anomaly detection functionality
-- ✨ **New**: Visualization tools
-- 🔄 **Changed**: Features from packet-length histograms to protocol statistics
-- 🔄 **Changed**: Default window parameters (60s→2s, 30s→1s)
-- 📚 **Added**: Comprehensive documentation
-
-### Version 1.0.0 (2024-10)
-- 🎉 **Initial**: C++ PCAP feature extractor
-- 📊 **Feature**: Sliding window analysis
-- 📝 **Feature**: CSV output format

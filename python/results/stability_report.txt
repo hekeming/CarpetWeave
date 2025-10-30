@@ -1,0 +1,21 @@
+======================================================================
+ STABILITY EXPERIMENT REPORT
+======================================================================
+
+
+Temporal Stability Analysis
+Number of segments: 6
+Windows per segment: ~10
+
+Results:
+  k=3: 0.9233 ± 0.0523
+  k=5: 0.9251 ± 0.0700
+  k=7: 0.9028 ± 0.0860
+  k=10: 0.9023 ± 0.0423
+
+Interpretation:
+  - Mean similarity > 0.8: Very stable behavioral patterns
+  - Mean similarity 0.6-0.8: Moderately stable
+  - Mean similarity < 0.6: Unstable/dynamic traffic
+
+Conclusion: Stable behavioral flows exist

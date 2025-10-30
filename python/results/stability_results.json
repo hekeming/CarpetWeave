@@ -1,0 +1,22 @@
+{
+  "k=3": {
+    "mean_similarity": 0.923338371852979,
+    "std_similarity": 0.05233811210119718,
+    "num_segments": 6
+  },
+  "k=5": {
+    "mean_similarity": 0.9251238222347008,
+    "std_similarity": 0.07003427627764411,
+    "num_segments": 6
+  },
+  "k=7": {
+    "mean_similarity": 0.9028066582931362,
+    "std_similarity": 0.08597243434296976,
+    "num_segments": 6
+  },
+  "k=10": {
+    "mean_similarity": 0.9022818419423817,
+    "std_similarity": 0.042301289928754524,
+    "num_segments": 6
+  }
+}
